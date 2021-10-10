@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 // will generate graphQL schema object based on parameters we pass in below
 const { buildSchema } = require('graphql');
@@ -70,6 +71,10 @@ app.use('/graphql',
     
 }));
 
-
-// listen on port 3000 on which we can visit page on localhost:3000
-app.listen(3000);
+// establish connect to MongoDB server
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@dwmccluster.8vt7g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`)
+    .then(() => {
+        app.listen(3000);
+    }).catch(err => {
+        console.log(err);
+});
