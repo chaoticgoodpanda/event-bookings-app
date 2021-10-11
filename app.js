@@ -4,8 +4,6 @@ const mongoose = require('mongoose');
 const graphQlSchema = require('./graphql/schema/index.js');
 const graphQlResolvers = require('./graphql/resolvers/index.js');
 
-const Event = require('./models/event');
-const User = require('./models/user');
 
 // will generate graphQL schema object based on parameters we pass in below
 // middleware that takes incoming requests, funnels through graphQL resolver
