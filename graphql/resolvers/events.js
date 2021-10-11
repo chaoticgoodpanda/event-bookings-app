@@ -18,30 +18,33 @@ module.exports = {
         }
     },
 
-    createEvent: async (args) => {
+    createEvent: async (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('Unauthenticated user');
+        }
+        const event = new Event({
+            title: args.eventInput.title,
+            description: args.eventInput.description,
+            price: +args.eventInput.price,
+            date: dateToString(args.eventInput.date),
+            // placeholder object for test user
+            creator: req.userId
+        });
+        let createdEvent;
         try {
-            const event = new Event({
-                title: args.eventInput.title,
-                description: args.eventInput.description,
-                price: +args.eventInput.price,
-                date: dateToString(args.eventInput.date),
-                // placeholder object for test user
-                creator: '6163fcfa477e1ff1120aed3e'
-            });
-            let createdEvent;
             // provided by mongoose pkg -- hit DB and write our data into the DB
-            const result = await event
-                .save()
+            const result = await event.save();
             createdEvent = transformEvent(result);
             // returns all core properties that make up our document object
-            const creator = await User.findById('6163fcfa477e1ff1120aed3e');
+            const creator = await User.findById(req.userId);
             if (!creator) {
                 throw new Error('User not found.');
             }
             creator.createdEvents.push(event);
             await creator.save();
             return createdEvent;
-        } catch (err) {
+        }
+        catch (err) {
             console.log(err);
             throw err;
         }

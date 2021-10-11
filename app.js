@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const graphQlSchema = require('./graphql/schema/index.js');
 const graphQlResolvers = require('./graphql/resolvers/index.js');
+const isAuth = require('./middleware/is-auth');
 
 
 // will generate graphQL schema object based on parameters we pass in below
@@ -14,6 +15,9 @@ const app = express();
 
 // bodyParser middleware to parse json bodies
 app.use(bodyParser.json());
+
+// this isAuth resolver will be on every server request
+app.use(isAuth);
 
 
 // graphQL endpoint handles requests -- only one endpoint to which all requests are sent
